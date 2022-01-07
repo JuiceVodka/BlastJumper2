@@ -15,10 +15,12 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-
     bool grnd;
 
     float jmpH = 3.0f;
+
+
+    public Animator movement;
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
         float ha = Input.GetAxis("Horizontal");
         float va = Input.GetAxis("Vertical");
 
-        move = (transform.right * ha + transform.forward*va) * speed * Time.deltaTime;
+        move = (transform.right * ha + transform.forward*va)/*.normalized*/ * speed * Time.deltaTime; // try normalising
         chrCntrl.Move(move);
 
         //jumping
@@ -59,7 +61,20 @@ public class PlayerMovement : MonoBehaviour
         }
         chrCntrl.Move(spd * Time.deltaTime);
 
-        Debug.Log(grnd);
+        animateMotion(ha, va);
+    }
 
+    private void animateMotion(float ha, float va){
+        if(grnd){
+            //hoja
+            if(ha == 0 && va == 0){
+                movement.SetFloat("Mode", 0.0f, 0.1f, Time.deltaTime);
+            }else{
+                movement.SetFloat("Mode", 0.5f, 0.1f, Time.deltaTime);
+            }
+        }else{
+            //skacemo oz letimo
+            movement.SetFloat("Mode", 1.0f, 0.1f, Time.deltaTime);
+        }
     }
 }
